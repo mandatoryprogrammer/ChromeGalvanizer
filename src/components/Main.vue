@@ -7,6 +7,15 @@
                     Chrome Galvanizer
                 </h1>
                 <i>Harden your Chrome browser via enterprise policy.</i>
+                <br />
+                <div style="font-size: 32px; margin-bottom: -15px">
+                  <a href="https://twitter.com/IAmMandatory" target="_blank">
+                    <font-awesome-icon :icon="['fab', 'twitter']" class="icon alt mr-1 ml-1" />
+                  </a>
+                  <a href="https://github.com/mandatoryprogrammer/ChromeGalvanizer" target="_blank">
+                    <font-awesome-icon :icon="['fab', 'github']" class="icon alt mr-1 ml-1" />
+                  </a>
+                </div>
             </template>
             <b-card-body>
                 <b-input-group prepend="Policy Type to Add" class="mb-2 mr-sm-2 mb-sm-0">
@@ -28,7 +37,7 @@
                         </b-form-invalid-feedback>
                     </b-input-group>
                     <b-alert show class="mt-1 mb-2">
-                        <font-awesome-icon :icon="['fas', 'info-circle']" class="icon alt" /> <i>Multiple extension IDs should be comma-separated. To disable a permission for all extensions, just enter <code>*</code> above.</i>
+                        <font-awesome-icon :icon="['fas', 'info-circle']" class="icon alt" /> <i>Multiple extension IDs should be comma-separated. To disable access to a URL for all extensions, just enter <code>*</code> above.</i>
                     </b-alert>
                     <b-input-group prepend="URL Pattern to Block" class="mb-2 mr-sm-2 mb-sm-0">
                         <b-input id="runtime_blocked_hosts_url_pattern_input" class="mb-2 mr-sm-2 mb-sm-0" placeholder="*://mail.google.com" v-model="policy_settings.runtime_blocked_hosts.url_pattern" :state="runtime_blocked_hosts_url_pattern_valid"></b-input>
@@ -88,18 +97,15 @@ export default {
     name: 'HelloWorld',
     props: {},
     data() {
-        // Make debugging suck less
-        window.app = this;
-
         return {
             policy_settings: {
                 runtime_blocked_hosts: {
                     extension_id: '',
                     url_pattern: '',
-                }
+                },
             },
             policy_rules: [],
-            policy_type_selected: 'runtime_blocked_hosts',
+            policy_type_selected: 'null',
             policy_type_options_select: [{
                     value: null,
                     text: '-- Please select a policy type to add --'
@@ -328,9 +334,6 @@ function add_runtime_blocked_hosts_to_xml_from_policy_list(policy_xml_doc, polic
   var policy_object = get_policy_object_from_blocked_host_policy_rules(
     policy_rules
   );
-
-  console.log(`Policy object: `);
-  console.log(policy_object);
 
   // Iterate through policy_object and add appropriate elements
   Object.keys(policy_object).map(extension_id => {
