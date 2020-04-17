@@ -66,7 +66,7 @@
                 <b-button variant="primary" class="download-policy-buttons m-2 pr-3 pl-4" v-on:click="download_mac_policy">
                     <font-awesome-icon :icon="['fab', 'apple']" class="icon alt" /> Mac
                 </b-button>
-                <b-button variant="primary" class="download-policy-buttons m-2 pr-3 pl-4">
+                <b-button variant="primary" class="download-policy-buttons m-2 pr-3 pl-4" v-on:click="download_linux_policy">
                     <font-awesome-icon :icon="['fab', 'linux']" class="icon alt" /> Linux
                 </b-button>
             </b-card-body>
@@ -74,7 +74,7 @@
     </div>
 </template>
 <script>
-import { osx_policy_template, osx_policy_header, windows_policy_template } from '../assets/js/static_values';
+import { osx_policy_template, osx_policy_header, windows_policy_template, linux_policy_template } from '../assets/js/static_values';
 
 function copy(input_data) {
   return JSON.parse(
@@ -112,6 +112,42 @@ export default {
         }
     },
     methods: {
+        download_linux_policy() {
+          /*
+          {
+            "ExtensionSettings": {
+              "*": {
+                "installation_mode": "blocked"
+              }
+          }
+          */
+          // Process runtime_blocked_hosts rule(s)
+          const runtime_blocked_hosts_rules = this.policy_rules.filter(policy_rule => {
+            return policy_rule.policy_type === 'runtime_blocked_hosts';
+          });
+          var linux_blocked_hosts_policy_object = get_policy_object_from_blocked_host_policy_rules(
+            runtime_blocked_hosts_rules
+          );
+          Object.keys(linux_blocked_hosts_policy_object).map(extension_id => {
+            linux_blocked_hosts_policy_object[extension_id] = {
+              'runtime_blocked_hosts': linux_blocked_hosts_policy_object[extension_id]
+            }
+          });
+          const linux_policy_json = JSON.stringify({
+            'ExtensionSettings': linux_blocked_hosts_policy_object
+          }, null, 4);
+
+          const linux_bash_file = copy(linux_policy_template).replace(
+            '{{REPLACE_ME_WITH_POLICY_JSON}}',
+            linux_policy_json
+          );
+
+          download_file(
+            linux_bash_file,
+            'install_policy.sh',
+            'application/x-sh'
+          );
+        },
         download_windows_policy() {
           var policy_template = copy(windows_policy_template);
 
