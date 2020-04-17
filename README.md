@@ -1,5 +1,7 @@
 # ![icon](./src/assets/img/cg-small-icon.png) Chrome Galvanizer
 
+## [Click here for the hosted version (no setup required)](https://thehackerblog.com/galvanizer/)
+
 ## Summary
 
 Chrome Galvanizer is a tool to generate Chrome enterprise policies to help users harden their browser security. Currently, the main support is for generating policies to restrict extension access from sites explicitly marked as sensitive (e.g. your email, bank, cryptocurency, and other sites). This allows you to prevent extensions from accessing these specific sites even if you've already granted them permission to do so when first installing them.
