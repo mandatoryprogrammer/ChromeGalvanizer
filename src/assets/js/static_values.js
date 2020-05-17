@@ -70,8 +70,6 @@ fi
 
 # Create required policy directory structure
 # See https://support.google.com/chrome/a/answer/7517525?hl=en for more info
-mkdir -p /etc/opt/chrome/
-mkdir -p /etc/opt/chrome/policies/
 mkdir -p /etc/opt/chrome/policies/managed/
 
 # Write policy to variable
